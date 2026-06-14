@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Миланочка 💜</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400;600&display=swap&subset=cyrillic" rel="stylesheet">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7b2cbf">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Миланочка">
+<link rel="apple-touch-icon" href="icon.png">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select:none;
+}
+
+html{
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+body{
+  font-family:'Montserrat',sans-serif;
+  color:white;
+  overflow-x:hidden;
+
+  background:
+  linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.9)),
+  url("leopard.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+/* ===== LOCK ===== */
+#lock{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:9999;
+  transition:1s cubic-bezier(0.2,0.9,0.2,1);
+}
+
+#lock h1{
+  font-size:2.2rem;
+  color:#e0aaff;
+}
+
+#lock p{opacity:0.7;margin-top:10px}
+
+input{
+  margin-top:20px;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  text-align:center;
+  outline:none;
+}
+
+button{
+  margin-top:15px;
+  padding:12px 20px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(45deg,#7b2cbf,#c77dff);
+  color:white;
+  transition:0.25s cubic-bezier(0.2,0.9,0.2,1.2);
+}
+
+button:active{
+  transform:scale(0.92);
+  opacity:0.8;
+}
+
+/* ===== APP ===== */
+#app{
+  opacity:0;
+  transition:1.5s ease;
+}
+
+/* ===== SECTIONS (iOS glass) ===== */
+.section{
+  padding:60px 10px;
+  text-align:center;
+
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  margin:20px;
+  border-radius:25px;
+
+  border:1px solid rgba(255,255,255,0.05);
+
+  transform: translateY(30px);
+  opacity:0;
+  transition: all 0.8s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.section.visible{
+  transform: translateY(0);
+  opacity:1;
+}
+
+.section h2{
+  color:#e0aaff;
+}
+
+/* ===== HERO ===== */
+.hero{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:3rem;
+  color:#e0aaff;
+}
+
+/* ===== GALLERY ===== */
+.gallery{
+  display:flex;
+  overflow-x:auto;
+  gap:15px;
+  padding:15px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card{
+  flex:0 0 auto;
+  width:80vw;
+  height:420px;
+  border-radius:20px;
+  overflow:hidden;
+  scroll-snap-align:center;
+  position:relative;
+  transition:0.4s cubic-bezier(0.2,0.9,0.2,1.2);
+}
+
+.card:active{
+  transform:scale(0.96);
+}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.caption{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:10px;
+  background:rgba(0,0,0,0.4);
+}
+
+/* ===== POEM ===== */
+.poem{
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+}
+
+.line{
+  display:block;
+  margin:14px 0;
+  opacity:0.25;
+  padding:10px;
+  border-radius:12px;
+  transition:0.6s cubic-bezier(0.2,0.9,0.2,1);
+}
+
+.line.active{
+  opacity:1;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+  transform:scale(1.05);
+}
+
+/* ===== TOUCH FX ===== */
+.touch-heart{
+  position:fixed;
+  font-size:18px;
+  pointer-events:none;
+  animation:pop 1.2s forwards;
+  z-index:9999;
+}
+
+@keyframes pop{
+  0%{transform:translate(-50%,-50%) scale(0.5);opacity:1}
+  100%{transform:translate(-50%,-120%) scale(1.5);opacity:0}
+}
+
+.ripple{
+  position:fixed;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:rgba(199,125,255,0.4);
+  animation:ripple 0.8s forwards;
+  pointer-events:none;
+}
+
+@keyframes ripple{
+  from{transform:scale(1);opacity:0.6}
+  to{transform:scale(8);opacity:0}
+}
+
+/* ===== PARTICLES ===== */
+.particle{
+  position:fixed;
+  width:6px;
+  height:6px;
+  background:rgba(199,125,255,0.4);
+  border-radius:50%;
+  animation:float 12s linear infinite;
+  pointer-events:none;
+}
+
+@keyframes float{
+  from{transform:translateY(100vh);opacity:0}
+  20%{opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOCK -->
+<div id="lock">
+  <h1>💜 разблокируй</h1>
+  <p>подсказка: место где мы познакомились</p>
+  <input id="code" placeholder="пароль">
+  <button onclick="unlock()">войти</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+<div class="hero">
+  <h1>Миланочка 💜</h1>
+  <button onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">
+    наши моменты
+  </button>
+</div>
+
+<div class="section" id="gallery">
+<h2>воспоминания</h2>
+
+<div class="gallery">
+  <div class="card"><img src="foto1.jpg"><div class="caption">мы</div></div>
+  <div class="card"><img src="foto2.jpg"><div class="caption">рядом</div></div>
+  <div class="card"><img src="foto3.jpg"><div class="caption">момент</div></div>
+
+  <div class="card"><img src="mila1.jpg"><div class="caption">она</div></div>
+  <div class="card"><img src="mila2.jpg"><div class="caption">красота</div></div>
+  <div class="card"><img src="mila3.jpg"><div class="caption">навсегда</div></div>
+</div>
+</div>
+
+<div class="section">
+<h2>тебе</h2>
+
+<div class="poem">
+<span class="line">Миланочка…</span>
+<span class="line">ты — не просто человек.</span>
+<span class="line">ты — ощущение, которое невозможно придумать.</span>
+
+<span class="line">ты тишина, в которой спокойно дышать.</span>
+<span class="line">и свет, который не требует внимания.</span>
+
+<span class="line">если любовь можно увидеть —</span>
+<span class="line">то она выглядит как ты.</span>
+
+<span class="line">и если есть “навсегда”,</span>
+<span class="line">оно звучит как твоё имя.</span>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* unlock */
+function unlock(){
+  const code=document.getElementById("code").value.trim().toLowerCase();
+
+  if(code==="армия"){
+    document.getElementById("lock").style.opacity="0";
+    setTimeout(()=>{
+      document.getElementById("lock").remove();
+      document.getElementById("app").style.opacity="1";
+    },800);
+  }
+}
+
+/* spring sections */
+const sections=document.querySelectorAll(".section");
+
+function reveal(){
+  const trigger=window.innerHeight*0.85;
+
+  sections.forEach(s=>{
+    if(s.getBoundingClientRect().top<trigger){
+      s.classList.add("visible");
+    }
+  });
+}
+
+window.addEventListener("scroll",reveal);
+reveal();
+
+/* poem highlight */
+const lines=document.querySelectorAll(".line");
+
+window.addEventListener("scroll",()=>{
+  const trigger=window.innerHeight/1.3;
+
+  lines.forEach(l=>{
+    const r=l.getBoundingClientRect();
+    if(r.top<trigger && r.bottom>150){
+      l.classList.add("active");
+    }else{
+      l.classList.remove("active");
+    }
+  });
+});
+
+/* touch + haptic */
+function touchEffect(x,y){
+
+  if(navigator.vibrate){
+    navigator.vibrate(15);
+  }
+
+  const h=document.createElement("div");
+  h.className="touch-heart";
+  h.innerHTML="💜";
+  h.style.left=x+"px";
+  h.style.top=y+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),1200);
+
+  const r=document.createElement("div");
+  r.className="ripple";
+  r.style.left=x+"px";
+  r.style.top=y+"px";
+  document.body.appendChild(r);
+  setTimeout(()=>r.remove(),800);
+}
+
+document.addEventListener("click",(e)=>{
+  touchEffect(e.clientX,e.clientY);
+});
+
+document.addEventListener("touchstart",(e)=>{
+  const t=e.touches[0];
+  touchEffect(t.clientX,t.clientY);
+});
+
+/* particles */
+for(let i=0;i<50;i++){
+  const p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"%";
+  p.style.animationDuration=(6+Math.random()*10)+"s";
+  document.body.appendChild(p);
+}
+
+</script>
+
+</body>
+</html>
