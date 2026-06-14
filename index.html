@@ -1,0 +1,32 @@
+0 + "%";
+    heart.style.top = Math.random()*100 + "%";
+
+    heart.style.fontSize =
+    (15 + Math.random()*45) + "px";
+
+    heart.style.opacity =
+    (0.2 + Math.random()*0.8);
+
+    heart.animate(
+    [
+        {
+            transform:"translateY(0px) rotate(0deg)"
+        },
+        {
+            transform:"translateY(-120vh) rotate(360deg)"
+        }
+    ],
+    {
+        duration:
+        6000 + Math.random()*12000,
+
+        iterations:Infinity
+    });
+
+    document.body.appendChild(heart);
+}
+
+</script>
+
+</body>
+</html>*10
