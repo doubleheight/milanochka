@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Миланочка 💜</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Montserrat:wght@300;400;600&display=swap&subset=cyrillic" rel="stylesheet">
+
+<style>
+
+:root{
+  --emotion-color:#c77dff;
+  --emotion-glow:rgba(199,125,255,0.4);
+}
+
+/* ===== BASE ===== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Montserrat',sans-serif;
+  color:white;
+  overflow-x:hidden;
+
+  background:
+  linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.9)),
+  url("leopard.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+
+  transition:0.8s ease;
+}
+
+/* ===== LOCK ===== */
+#lock{
+  position:fixed;
+  inset:0;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+#lock h1{
+  color:#e0aaff;
+}
+
+input{
+  margin-top:15px;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  text-align:center;
+}
+
+button{
+  margin-top:10px;
+  padding:12px 20px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(45deg,#7b2cbf,#c77dff);
+  color:white;
+}
+
+/* ===== APP ===== */
+#app{
+  opacity:0;
+  transition:1s ease;
+}
+
+/* ===== SECTIONS ===== */
+.section{
+  padding:60px 10px;
+  margin:20px;
+  border-radius:25px;
+
+  background: rgba(10,10,20,0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border:1px solid rgba(255,255,255,0.05);
+
+  transform:translateY(30px);
+  opacity:0;
+  transition:0.8s ease;
+}
+
+.section.visible{
+  transform:translateY(0);
+  opacity:1;
+}
+
+/* ===== HERO ===== */
+.hero{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  color:#e0aaff;
+  font-size:3rem;
+}
+
+/* ===== GALLERY ===== */
+.gallery{
+  display:flex;
+  overflow-x:auto;
+  gap:15px;
+  padding:15px;
+  scroll-snap-type:x mandatory;
+}
+
+.card{
+  flex:0 0 auto;
+  width:80vw;
+  height:420px;
+  border-radius:20px;
+  overflow:hidden;
+  position:relative;
+
+  scroll-snap-align:center;
+  transition:0.5s ease;
+}
+
+.card:active{
+  transform:scale(0.96);
+}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.caption{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:10px;
+  background:rgba(0,0,0,0.4);
+  transition:0.6s ease;
+}
+
+/* ===== POEM ===== */
+.poem{
+  padding:20px;
+}
+
+.line{
+  display:block;
+  margin:14px 0;
+  opacity:0.3;
+  padding:10px;
+  border-radius:12px;
+  transition:0.6s ease;
+}
+
+.line.active{
+  opacity:1;
+  background:rgba(199,125,255,0.15);
+  color:var(--emotion-color);
+  text-shadow:0 0 20px var(--emotion-glow);
+  transform:scale(1.03);
+}
+
+/* ===== OVERLAY ===== */
+.memory-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:0.4s ease;
+  z-index:10;
+}
+
+.memory-overlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* ===== EMOTION LIGHT ===== */
+.emotion-light{
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle at 50% 50%, var(--emotion-glow), transparent 60%);
+  opacity:0;
+  transition:0.6s ease;
+  pointer-events:none;
+  z-index:5;
+}
+
+.emotion-light.active{
+  opacity:1;
+}
+
+/* ===== TOUCH FX ===== */
+.touch-heart{
+  position:fixed;
+  font-size:18px;
+  animation:pop 1.2s forwards;
+  pointer-events:none;
+}
+
+@keyframes pop{
+  0%{transform:scale(0.5);opacity:1}
+  100%{transform:translateY(-100px) scale(1.5);opacity:0}
+}
+
+.ripple{
+  position:fixed;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:rgba(199,125,255,0.4);
+  animation:ripple 0.8s forwards;
+}
+
+@keyframes ripple{
+  from{transform:scale(1);opacity:0.6}
+  to{transform:scale(8);opacity:0}
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOCK -->
+<div id="lock">
+  <h1>💜 разблокируй</h1>
+  <input id="code" placeholder="пароль">
+  <button onclick="unlock()">войти</button>
+</div>
+
+<div class="emotion-light" id="emotionLight"></div>
+<div class="memory-overlay" id="overlay"></div>
+
+<!-- APP -->
+<div id="app">
+
+<div class="hero">
+  <h1>Миланочка 💜</h1>
+</div>
+
+<div class="section" id="gallery">
+
+<h2>воспоминания</h2>
+
+<div class="gallery">
+
+<div class="card memory-card" onclick="openMemory(this)"><img src="foto1.jpg"><div class="caption">мы</div></div>
+<div class="card memory-card" onclick="openMemory(this)"><img src="foto2.jpg"><div class="caption">рядом</div></div>
+<div class="card memory-card" onclick="openMemory(this)"><img src="foto3.jpg"><div class="caption">момент</div></div>
+
+<div class="card memory-card" onclick="openMemory(this)"><img src="mila1.jpg"><div class="caption">она</div></div>
+<div class="card memory-card" onclick="openMemory(this)"><div class="caption">красота</div></div>
+<div class="card memory-card" onclick="openMemory(this)"><img src="mila3.jpg"><div class="caption">любовь</div></div>
+
+</div>
+</div>
+
+<div class="section">
+
+<div class="poem">
+<span class="line">Миланочка…</span>
+<span class="line">ты — ощущение, а не человек.</span>
+<span class="line">ты — тишина, в которой спокойно.</span>
+<span class="line">и свет, который не требует внимания.</span>
+<span class="line">если любовь можно увидеть — это ты.</span>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* UNLOCK */
+function unlock(){
+  if(document.getElementById("code").value.trim()==="армия"){
+    document.getElementById("lock").remove();
+    document.getElementById("app").style.opacity="1";
+  }
+}
+
+/* sections */
+const sections=document.querySelectorAll(".section");
+
+window.addEventListener("scroll",()=>{
+  sections.forEach(s=>{
+    if(s.getBoundingClientRect().top<window.innerHeight*0.85){
+      s.classList.add("visible");
+    }
+  });
+});
+
+/* EMOTIONS */
+const emotions={
+  foto1:{color:"#c77dff",glow:"rgba(199,125,255,0.4)"},
+  foto2:{color:"#ff6bcb",glow:"rgba(255,107,203,0.4)"},
+  foto3:{color:"#7b2cbf",glow:"rgba(123,44,191,0.4)"},
+  mila1:{color:"#ffb3c6",glow:"rgba(255,179,198,0.4)"},
+  mila3:{color:"#ffd6ff",glow:"rgba(255,214,255,0.4)"}
+};
+
+function openMemory(card){
+
+  const img=card.querySelector("img")?.src||"";
+  const light=document.getElementById("emotionLight");
+
+  let key="foto1";
+  if(img.includes("foto2")) key="foto2";
+  if(img.includes("foto3")) key="foto3";
+  if(img.includes("mila1")) key="mila1";
+  if(img.includes("mila3")) key="mila3";
+
+  const e=emotions[key]||emotions.foto1;
+
+  document.documentElement.style.setProperty("--emotion-color",e.color);
+  document.documentElement.style.setProperty("--emotion-glow",e.glow);
+
+  light.classList.add("active");
+  document.getElementById("overlay").classList.add("active");
+
+  if(navigator.vibrate) navigator.vibrate(20);
+
+  document.querySelectorAll(".memory-card").forEach(c=>{
+    c.style.opacity="0.3";
+  });
+
+  card.style.opacity="1";
+}
+
+/* CLOSE */
+document.getElementById("overlay").onclick=()=>{
+  document.getElementById("overlay").classList.remove("active");
+  document.getElementById("emotionLight").classList.remove("active");
+
+  document.querySelectorAll(".memory-card").forEach(c=>{
+    c.style.opacity="1";
+  });
+};
+
+/* touch */
+document.addEventListener("click",(e)=>{
+  const h=document.createElement("div");
+  h.className="touch-heart";
+  h.innerHTML="💜";
+  h.style.left=e.clientX+"px";
+  h.style.top=e.clientY+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),1000);
+
+  const r=document.createElement("div");
+  r.className="ripple";
+  r.style.left=e.clientX+"px";
+  r.style.top=e.clientY+"px";
+  document.body.appendChild(r);
+  setTimeout(()=>r.remove(),800);
+});
+
+</script>
+
+</body>
+</html>
